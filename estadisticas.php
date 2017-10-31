@@ -23,9 +23,8 @@
 	<div class="panel panel-success">
 		<div class="panel-heading">
 		    <div class="btn-group pull-right">
-				<button type='button' class="btn btn-success" data-toggle="modal" data-target="#nuevoCliente"><span class="glyphicon glyphicon-plus" ></span> Nueva Categoría</button>
 			</div>
-			<h4><i class='glyphicon glyphicon-search'></i> Buscar Categorías</h4>
+			<h4><i class='glyphicon glyphicon-search'></i> Buscar Balance</h4>
 		</div>
 		<div class="panel-body">
 			<?php
@@ -35,9 +34,9 @@
 			<form class="form-horizontal" role="form" id="datos_cotizacion">
 				
 						<div class="form-group row">
-							<label for="q" class="col-md-2 control-label">Nombre</label>
+							<label for="q" class="col-md-2 control-label">Codigo</label>
 							<div class="col-md-5">
-								<input type="text" class="form-control" id="q" placeholder="Nombre de la categoría" onkeyup='load(1);'>
+								<input type="text" class="form-control" id="q" placeholder="Codigo del Producto" onkeyup='load(1);'>
 							</div>
 							<div class="col-md-3">
 								<button type="button" class="btn btn-default" onclick='load(1);'>
@@ -57,7 +56,7 @@
        				$codigos[] = $codig;
        			}
 				$lenght = sizeof($codigos);
-
+				$balance = 0;
 
 
 				for($i=0;$i<$lenght;$i++){
@@ -66,12 +65,12 @@
 					$suma = 0;
 					$resta = 0;
 
-					$sql = "SELECT `products`.`precio_producto`, `historial`.`fecha`, `historial`.`cantidad`, `historial`.`nota` FROM `products`, `historial` WHERE `historial`.`referencia` = '$codigo' AND `products`.`codigo_producto` = '$codigo'";
+					$sql = "SELECT `products`.`precio_producto`, `historial`.`fecha`, `historial`.`cantidad`, `historial`.`nota`, `products`.`stock` FROM `products`, `historial` WHERE `historial`.`referencia` = '$codigo' AND `products`.`codigo_producto` = '$codigo'";
 					$stmt = $con->prepare($sql);
 	       			$stmt->execute();
-	       			$stmt->bind_result($precio, $fecha, $cantidad, $concepto);
+	       			$stmt->bind_result($precio, $fecha, $cantidad, $concepto, $stock);
 
-	       			echo "<table border=3>
+	       			echo "<table border=3 HEIGHT='1000%'>
 			      	 	 	 <tr>
 			      	 	 	 	<td> $codigo </td>
 			      	 	 	 	<td>  </td>
@@ -100,18 +99,21 @@
 			      	 	 	 <tr>
 			                   	<td>$fecha</td>
 			                   	<td>"; if ($coincidenciasalida == true){echo "Venta";} if ($coincidenciaentrada == true){echo "Compra";} echo"</td>
-			                   	<td>"; if ($coincidenciaentrada == true){ echo "$".number_format($precio, 2, ",", ".") ;} echo"</td> <td>"; if ($coincidenciaentrada == true){ echo number_format($cantidad, 0, ",", ".") ;} echo"</td> <td>"; if ($coincidenciaentrada == true){ echo "$".number_format(($cantidad*$precio), 2, ",", "."); $suma = ($cantidad*$precio) + $suma;} echo"</td>
-			                   	<td>"; if ($coincidenciasalida == true){ echo "$".number_format($precio, 2, ",", ".") ;} echo"</td> <td>"; if ($coincidenciasalida == true){ echo number_format($cantidad, 0, ",", ".") ;} echo"</td> <td>"; if ($coincidenciasalida == true){ echo "$".number_format(($cantidad*$precio), 2, ",", "."); $resta = ($cantidad*$precio) + $resta;} echo"</td>
+			                   	<td>"; if ($coincidenciaentrada == true){ echo number_format($cantidad, 0, ",", ".") ;} echo"</td> <td>"; if ($coincidenciaentrada == true){ echo "$".number_format($precio, 2, ",", ".") ;} echo"</td> <td>"; if ($coincidenciaentrada == true){ echo "$".number_format(($cantidad*$precio), 2, ",", "."); $suma = ($cantidad*$precio) + $suma;} echo"</td>
+			                   	<td>"; if ($coincidenciasalida == true){ echo number_format($cantidad, 0, ",", ".") ;} echo"</td> <td>"; if ($coincidenciasalida == true){ echo "$".number_format($precio, 2, ",", ".") ;} echo"</td> <td>"; if ($coincidenciasalida == true){ echo "$".number_format(($cantidad*$precio), 2, ",", "."); $resta = ($cantidad*$precio) + $resta;} echo"</td>
 			                   	<td>$cantidad</td> <td>";echo "$".number_format($precio, 2, ",", "."); echo"</td> <td>";echo "$".number_format(($cantidad*$precio), 2, ",", ".") ; echo"</td>
 			      		 	</tr>
 			       			";
-
+			       			
 			       		}
 			       			echo"
-			       				<tr><td COLSPAN = 11 >"; $sumatoria = $suma - $resta; echo "$".number_format($sumatoria, 2, ",", "."); echo"</td></tr>
+			       				<tr><td COLSPAN = 11 >"; $sumatoria = $suma - $resta; echo "Saldo total: $".number_format($sumatoria, 2, ",", "."); echo"</td></tr>
+			       				<tr><td COLSPAN = 11 >";echo "Stock: ".number_format($stock, 0, ",", ".")." unidades."; echo"</td></tr>
 			       				";
 				       		echo "<br>";
+				       		$balance = $sumatoria + $balance;
 	       			}
+	       		echo "Balance Total: $".number_format($balance, 2, ",", ".");
 			?>
   </div>
 </div>
