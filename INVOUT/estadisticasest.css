@@ -1,0 +1,12 @@
+table{
+	width: 100%; 
+}
+table td{
+	text-align: center;
+}
+div.scroll{
+
+        height:400px;
+        overflow-y:scroll;
+        overflow-x:hidden;
+}
