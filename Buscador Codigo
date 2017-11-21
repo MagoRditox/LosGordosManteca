@@ -1,0 +1,49 @@
+// Buscador del Codigo, mostrando toda su Info
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PRUEBA</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<form method="POST">
+	<p style="font-family: Verdana; font-size: 20px;">CÓDIGO
+	<input class="input_s" type="text" name="cod" size=2>
+	<input class="input_s" type="submit" value="Buscar" name="buscar"></p>
+</form>
+
+<?php
+	$cod = $_POST['cod'];
+	require_once ("db.php");
+	require_once ("conexion.php");
+	if(isset($_REQUEST['buscar'])){
+	    $sql = "SELECT id_producto, DATE_FORMAT(fecha,'%d/%m/%Y') as fecha, DATE_FORMAT(hora,'%h:%s %p') as hora, cantidad, precio FROM historial WHERE id_producto='$cod'";
+	    $stmt = $con->prepare($sql);
+	    $stmt->execute();
+	    $stmt->bind_result($id_producto, $fecha, $hora, $cantidad, $precio);
+	    while($stmt->fetch()){
+	          echo "<table>
+	          		<tr>
+		            <td><center>Código</center></td>
+			        <td><center>Fecha</center></td>
+			        <td><center>Hora</center></td>
+			        <td><center>Cantidad  de productos</center></td>
+			        <td><center>Precio</center></td>
+			        </tr>
+
+			       	<tr>
+		            <td class='input_s' style='border: 1px solid;'>$id_producto</td>
+			        <td class='input_s' style='border: 1px solid;'>$fecha</td>
+			        <td class='input_s' style='border: 1px solid;'>$hora</td>
+			        <td class='input_s' style='border: 1px solid;'>$cantidad</td>
+			        <td class='input_s' style='border: 1px solid;'>$precio</td>
+			        </tr>
+			        </table>
+	           ";
+	        }
+	        $con->close();
+	 }
+?>
+</body>
+</html>
