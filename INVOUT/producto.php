@@ -13,8 +13,9 @@
 	$active_usuarios="";	
 	$title="Producto";
 	
-	if (isset($_POST['reference']) and isset($_POST['quantity'])){
+	if (isset($_POST['reference']) and isset($_POST['quantity'])){//and isset($_POST['Precio'])
 		$quantity=intval($_POST['quantity']);
+		$precio=$_POST['precio'];
 		$reference=mysqli_real_escape_string($con,(strip_tags($_POST["reference"],ENT_QUOTES)));
 		$id_producto=intval($_GET['id']);
 		$user_id=$_SESSION['user_id'];
@@ -22,6 +23,7 @@
 		$nota="$firstname agregó $quantity producto(s) al inventario";
 		$fecha=date("Y-m-d H:i:s");
 		guardar_historial($id_producto,$user_id,$fecha,$nota,$reference,$quantity);
+		guardar_ingreso($id_producto,$fecha,$quantity,$precio);
 		$update=agregar_stock($id_producto,$quantity);
 		if ($update==1){
 			$message=1;
@@ -39,6 +41,7 @@
 		$nota="$firstname eliminó $quantity producto(s) del inventario";
 		$fecha=date("Y-m-d H:i:s");
 		guardar_historial($id_producto,$user_id,$fecha,$nota,$reference,$quantity);
+		//retirar_stock($id_producto,$quantity);
 		$update=eliminar_stock($id_producto,$quantity);
 		if ($update==1){
 			$message=1;

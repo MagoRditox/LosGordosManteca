@@ -18,13 +18,17 @@
             </div>
           </div>
           <div class="form-group">
+            <label for="precio" class="col-sm-2 control-label">Precio</label>
+            <div class="col-sm-6">
+              <input type="text" name="precio" class="form-control" id="precio" value="" placeholder="Precio unitario">
+            </div>
+          </div>
+          <div class="form-group">
             <label for="reference" class="col-sm-2 control-label">Referencia</label>
             <div class="col-sm-6">
               <input type="text" name="reference" class="form-control" id="reference" value="" placeholder="Referencia">
             </div>
           </div>
-          
-       
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
